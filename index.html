@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблица Google Sheets</title>
+</head>
+<body>
+    <h1>Данные из Google Sheets</h1>
+    <table id="data-table" border="1">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Сумма</th>
+                <th>Площадка</th>
+                <th>Количество гостей</th>
+                <th>80%</th>
+                <th>Расходы</th>
+                <th>Прибыль</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Данные будут добавлены здесь -->
+        </tbody>
+    </table>
+
+    <script>
+        // Функция для получения данных из Google Sheets
+         async function fetchData() {
+            const loadingIndicator = document.getElementById('loading');
+            loadingIndicator.style.display = 'block'; // Показываем индикатор загрузки
+
+            try {
+                const response = await fetch('/get-data');  // Запрос к вашему API
+                const data = await response.json();
+
+                const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = '';  // Очищаем тело таблицы
+
+                // Заполняем таблицу данными
+                data.forEach(row => {
+                    const newRow = tableBody.insertRow();
+                    Object.values(row).forEach(cell => {
+                        const newCell = newRow.insertCell();
+                        newCell.textContent = cell;  // Заполняем ячейку
+                    });
+                });
+            } catch (error) {
+                console.error('Ошибка при получении данных:', error);
+                alert('Не удалось загрузить данные. Пожалуйста, попробуйте позже.'); // Уведомление об ошибке
+            } finally {
+                loadingIndicator.style.display = 'none'; // Скрываем индикатор загрузки
+            }
+        }
+
+        // Вызываем функцию для загрузки данных при загрузке страницы
+        window.onload = fetchData;
+    </script>
+</body>
+</html>
+
